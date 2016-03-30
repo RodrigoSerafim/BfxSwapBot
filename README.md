@@ -1,0 +1,2 @@
+# BfxSwapBot
+Bitfinex Swap Bot
