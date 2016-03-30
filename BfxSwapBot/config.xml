@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<key>yourApiKeyGoesHere</key>
+	<secret>yourApiSecretGoesHere</secret>
+	<lendCurrency currency="usd" period="2" minimum="50"/>
+</config>

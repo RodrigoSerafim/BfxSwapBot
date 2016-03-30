@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BfxSwapBot", "BfxSwapBot\BfxSwapBot.csproj", "{DDE2D9EB-B905-4D4D-9799-ECBAEAF38D38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingApi.Bitfinex", "TradingApi.Bitfinex\TradingApi.Bitfinex.csproj", "{1C6AFC5B-4C6D-4F88-97FF-5845D45E94C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingApi.ModelObjects", "TradingApi.ModelObjects\TradingApi.ModelObjects.csproj", "{F0F159A5-C5D6-4CBF-B061-7943F8F7BC5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C6AFC5B-4C6D-4F88-97FF-5845D45E94C7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1C6AFC5B-4C6D-4F88-97FF-5845D45E94C7}.Debug|x86.Build.0 = Debug|Any CPU
+		{1C6AFC5B-4C6D-4F88-97FF-5845D45E94C7}.Release|x86.ActiveCfg = Release|Any CPU
+		{1C6AFC5B-4C6D-4F88-97FF-5845D45E94C7}.Release|x86.Build.0 = Release|Any CPU
+		{DDE2D9EB-B905-4D4D-9799-ECBAEAF38D38}.Debug|x86.ActiveCfg = Debug|x86
+		{DDE2D9EB-B905-4D4D-9799-ECBAEAF38D38}.Debug|x86.Build.0 = Debug|x86
+		{DDE2D9EB-B905-4D4D-9799-ECBAEAF38D38}.Release|x86.ActiveCfg = Release|x86
+		{DDE2D9EB-B905-4D4D-9799-ECBAEAF38D38}.Release|x86.Build.0 = Release|x86
+		{F0F159A5-C5D6-4CBF-B061-7943F8F7BC5A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0F159A5-C5D6-4CBF-B061-7943F8F7BC5A}.Debug|x86.Build.0 = Debug|Any CPU
+		{F0F159A5-C5D6-4CBF-B061-7943F8F7BC5A}.Release|x86.ActiveCfg = Release|Any CPU
+		{F0F159A5-C5D6-4CBF-B061-7943F8F7BC5A}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
