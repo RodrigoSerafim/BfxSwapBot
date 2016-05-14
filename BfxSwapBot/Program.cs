@@ -2,14 +2,25 @@
 using TradingApi.Bitfinex;
 using TradingApi.ModelObjects;
 using System.Linq;
+using log4net;
 
 namespace BfxSwapBot
 {
 	class MainClass
 	{
+		public static readonly ILog _log = LogManager.GetLogger ("BfxSwapBot");
+
 		public static void Main (string[] args)
 		{
-			SwapBot2();
+			try {
+				log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo("log4netConfig.xml"));
+
+				SwapBot2();
+			}
+			catch(Exception ex) {
+				_log.Error (ex.GetType (), ex);
+				_log.Info ("Swap update finished with error");
+			}
 		}
 
 		public static void SwapBot2()
@@ -17,10 +28,7 @@ namespace BfxSwapBot
 			var config = ConfigXml.Load ("config.xml");
 
 			BitfinexApi api = new BitfinexApi(config.Secret, config.Key);
-			//BitfinexApi api = new BitfinexApi("", "");
-
-			Console.WriteLine (DateTime.Now + " Conecting to bitfinex");
-
+			_log.Info("Connecting to bitfinex");
 
 			//----------------------------------------------------------------------
 			// GET ACCOUNT DATA
@@ -32,6 +40,10 @@ namespace BfxSwapBot
 			// ITERATE LENDING CURRENCIES
 			//----------------------------------------------------------------------
 			foreach (var lendCurrency in config.LendCurrencies) {
+
+				//setting the maximum lend value to 0 effectively disables the bot for this currency
+				if (lendCurrency.Maximum == 0)
+					continue;
 
 				//----------------------------------------------------------------------
 				// CALCULATE THE OPTIMAL RATE
@@ -80,55 +92,52 @@ namespace BfxSwapBot
 						bestMoney = money;
 					}
 
-					//System.Diagnostics.Debug.WriteLine("rate:" + swapRate + " -> " + money * 1000 + " $" + " -> " + daysWaiting + " wait");
+					_log.Debug("rate:" + swapRate + " -> " + money * 1000 + " $" + " -> " + daysWaiting + " wait");
 				}
 
 				//put the offer just below the best price
 				bestRate -= 0.0001;
-				Console.WriteLine ("Best rate = " + bestRate);
+				_log.Info("Best rate = " + bestRate);
 
 
 				//----------------------------------------------------------------------
 				// LOOK FOR SWAPPABLE BALANCE
 				//----------------------------------------------------------------------
-				//TODO: Do we need to wait a bit for the cancels to take effect?
-
-
 				var deposit = balances.First (x => x.Type == "deposit" && x.Currency.ToLowerInvariant() == lendCurrency.Currency).Available;
-				//deposit = Decimal.Round(deposit, 2);
 
+				var locked = balances.First (x => x.Type == "deposit" && x.Currency.ToLowerInvariant() == lendCurrency.Currency).Amount;
+				locked -= deposit;
+				_log.Debug ("Account balance is: " + deposit + " available + " + locked + " locked");
 
 				//----------------------------------------------------------------------
 				// CANCEL OVERSTRETCHED LEND POSITIONS
 				//----------------------------------------------------------------------
-
 				foreach (var offer in offers.Where(x => x.Currency.ToLowerInvariant() == lendCurrency.Currency))
-				//if the new best rate is lower then cancel this offer (we only update down)
-				if (bestRate < (double)offer.Rate / 365.0) {                        
+					//if the new best rate is lower then cancel this offer (we only update down)
+					if (bestRate < (double)offer.Rate / 365.0) {                        
 						api.CancelOffer (offer.Id);
 						//update the deposit to avoid another API acess
 						deposit += offer.RemainingAmount;
+						locked -= offer.RemainingAmount;
 
-						string msg = "Lend canceled. " + offer.RemainingAmount + " @" + (double)offer.Rate / 365.0;
-						Console.WriteLine (msg);
+						_log.Info("Lend canceled. " + offer.RemainingAmount + " @" + (double)offer.Rate / 365.0);
 					}
-
-
 
 				//----------------------------------------------------------------------
 				// CREATE NEW LEND
 				//----------------------------------------------------------------------
+				if (lendCurrency.Maximum != -1 && locked + deposit > lendCurrency.Maximum) {
+					deposit = lendCurrency.Maximum - locked;
+				}
+
 				if (deposit >= lendCurrency.Minimum) {
 					api.SendNewOffer (lendCurrency.Currency, deposit, (decimal)(bestRate * 365.0), lendCurrency.Period, "lend");
 
-					string msg = "New lend created. " + deposit + " @" + bestRate + " for " + lendCurrency.Period + " days";
-					Console.WriteLine (msg);
+					_log.Info("New lend created. " + deposit + " @" + bestRate + " for " + lendCurrency.Period + " days");
 				}
 			}
 
-
-			Console.WriteLine (DateTime.Now + " Swap update finished");
-
+			_log.Info("Swap update finished");
 		}
 	}
 }

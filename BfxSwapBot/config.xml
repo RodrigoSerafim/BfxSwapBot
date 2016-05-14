@@ -2,5 +2,5 @@
 <config>
 	<key>yourApiKeyGoesHere</key>
 	<secret>yourApiSecretGoesHere</secret>
-	<lendCurrency currency="usd" period="2" minimum="50"/>
+	<lendCurrency currency="usd" period="2" minimum="50" maximum="-1"/>
 </config>

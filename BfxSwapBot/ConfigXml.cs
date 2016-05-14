@@ -14,6 +14,8 @@ namespace BfxSwapBot
 		public int Period { get; set; }
 		[XmlAttribute("minimum")]
 		public decimal Minimum { get; set; }
+		[XmlAttribute("maximum")]
+		public decimal Maximum { get; set; }
 	}
 
 
